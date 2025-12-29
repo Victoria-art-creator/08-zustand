@@ -8,8 +8,9 @@ import { useDebounce } from 'use-debounce';
 import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
-import NoteForm from '@/components/NoteForm/NoteForm';
-import Modal from '@/components/Modal/Modal';
+// import NoteForm from '@/components/NoteForm/NoteForm';
+// import Modal from '@/components/Modal/Modal';
+import Link from 'next/link';
 
 interface NotesClientProps {
   tag: string;
@@ -19,7 +20,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [debouncedQuery] = useDebounce(query, 500);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['notes', tag, debouncedQuery, page],
@@ -37,9 +38,9 @@ export default function NotesClient({ tag }: NotesClientProps) {
     setPage(1);
   };
 
-  const toggleModal = () => {
-    setIsModalOpen((prev) => !prev);
-  };
+  // const toggleModal = () => {
+  //   setIsModalOpen((prev) => !prev);
+  // };
 
   const totalPages = data?.totalPages ?? 0;
   const notes = data?.notes ?? [];
@@ -58,23 +59,26 @@ export default function NotesClient({ tag }: NotesClientProps) {
             onPageChange={setPage}
           />
         )}
-        <button
+        {/* <button
           className={css.button}
           onClick={() => {
             toggleModal();
           }}
         >
           Create note +
-        </button>
+        </button> */}
+        <Link href="/notes/action/create" className={css.button}>
+          Create note +
+        </Link>
       </header>
 
       {notes.length > 0 && <NoteList notes={notes} />}
 
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <Modal onClose={toggleModal}>
           <NoteForm onClose={toggleModal} />
         </Modal>
-      )}
+      )} */}
     </div>
   );
 }
