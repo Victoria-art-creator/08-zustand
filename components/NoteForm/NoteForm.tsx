@@ -58,28 +58,6 @@ export default function NoteForm({ tags }: NoteFormProps) {
     router.back();
   };
 
-  // const handleSubmit = async (formData: FormData) => {
-  //   const title = formData.get('title') as string;
-  //   const content = formData.get('content') as string;
-  //   const tag = formData.get('tag') as NoteTag;
-
-  //   if (!title || title.length < 3) {
-  //     toast.error('Title must be at least 3 characters');
-  //     return;
-  //   }
-
-  //     toast.success('Note created');
-  //     router.push('/notes/filter/all');
-  //     // onSuccess: (() => {
-  //     //   clearDraft();
-  //     //   router.push('/notes/filter/all');
-  //     // });
-  //     router.refresh();
-  //   } catch {
-  //     toast.error('Failed to create note');
-  //   }
-  // };
-
   return (
     <form className={css.form} action={formAction}>
       <div className={css.formGroup}>
