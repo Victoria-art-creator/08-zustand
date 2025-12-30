@@ -21,5 +21,5 @@ export const metadata: Metadata = {
 };
 
 export default function CreateNotePage() {
-  return <CreateNote tags={[]} />;
+  return <CreateNote />;
 }
