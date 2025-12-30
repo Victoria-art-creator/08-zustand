@@ -1,17 +1,21 @@
 'use client';
 
 import css from './NoteForm.module.css';
-import type { NoteTag } from '../../types/note';
+import { NOTE_TAGS  } from '../../types/note';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useNoteDraftStore } from '@/lib/store/noteStore';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-interface NoteFormProps {
-  tags: NoteTag[];
-}
+// interface NoteFormProps {
+//   tags: NoteTag[];
+// }
 
-export default function NoteForm({ tags }: NoteFormProps) {
+// export default function NoteForm({ tags }: NoteFormProps) {
+  export default function NoteForm() {
   const router = useRouter();
+
+  const queryClient = useQueryClient();
 
   const { draft, setDraft, clearDraft } = useNoteDraftStore();
 
@@ -24,13 +28,8 @@ export default function NoteForm({ tags }: NoteFormProps) {
     setDraft({ [name]: value });
   };
 
-  const formAction = async () => {
-    if (!draft.title || draft.title.length < 3) {
-      toast.error('Title must be at least 3 characters');
-      return;
-    }
-
-    try {
+  const createNoteMutation = useMutation({
+    mutationFn: async () => {
       const response = await fetch(
         'https://notehub-public.goit.study/api/notes',
         {
@@ -43,15 +42,29 @@ export default function NoteForm({ tags }: NoteFormProps) {
         },
       );
 
-      if (!response.ok) throw new Error();
-
+      if (!response.ok) {
+        throw new Error('Failed to create note');
+      }
+    },
+    onSuccess: () => {
       toast.success('Note created');
       clearDraft();
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+
       router.back();
       router.refresh();
-    } catch {
+    },
+    onError: () => {
       toast.error('Failed to create note');
+    },
+  });
+
+  const formAction = async () => {
+    if (!draft.title || draft.title.length < 3) {
+      toast.error('Title must be at least 3 characters');
+      return;
     }
+    createNoteMutation.mutate();
   };
 
   const handleCancel = () => {
@@ -95,7 +108,12 @@ export default function NoteForm({ tags }: NoteFormProps) {
           onChange={handleChange}
           required
         >
-          {tags.map((tag) => (
+          {NOTE_TAGS.map((tag) => (
+            <option key={tag} value={tag}>
+              {tag}
+            </option>
+          ))}
+          {/* {tags.map((tag) => (
             <option key={tag} value={tag}>
               {tag}
             </option>
@@ -104,7 +122,7 @@ export default function NoteForm({ tags }: NoteFormProps) {
           <option value="Work">Work</option>
           <option value="Personal">Personal</option>
           <option value="Meeting">Meeting</option>
-          <option value="Shopping">Shopping</option>
+          <option value="Shopping">Shopping</option> */}
         </select>
       </div>
 
@@ -117,7 +135,11 @@ export default function NoteForm({ tags }: NoteFormProps) {
           Cancel
         </button>
 
-        <button type="submit" className={css.submitButton}>
+        <button
+          type="submit"
+          className={css.submitButton}
+          disabled={createNoteMutation.isPending}
+        >
           Create note
         </button>
       </div>

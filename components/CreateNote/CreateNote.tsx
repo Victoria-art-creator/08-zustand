@@ -1,17 +1,17 @@
 import NoteForm from '../NoteForm/NoteForm';
 import css from './CreateNote.module.css';
-import type { NoteTag } from '@/types/note';
+// import type { NoteTag } from '@/types/note';
 
-interface Props {
-  tags: NoteTag[];
-}
+// interface Props {
+//   tags: NoteTag[];
+// }
 
-export default function CreateNote({ tags }: Props) {
+export default function CreateNote() {
   return (
     <main className={css.main}>
       <div className={css.container}>
         <h1 className={css.title}>Create note</h1>
-        <NoteForm tags={tags} />
+        <NoteForm />
       </div>
     </main>
   );
