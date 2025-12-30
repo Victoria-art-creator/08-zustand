@@ -1,10 +1,5 @@
 import NoteForm from '../NoteForm/NoteForm';
 import css from './CreateNote.module.css';
-// import type { NoteTag } from '@/types/note';
-
-// interface Props {
-//   tags: NoteTag[];
-// }
 
 export default function CreateNote() {
   return (

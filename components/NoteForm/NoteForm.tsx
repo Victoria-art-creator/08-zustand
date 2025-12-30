@@ -1,22 +1,15 @@
 'use client';
 
 import css from './NoteForm.module.css';
-import { NOTE_TAGS  } from '../../types/note';
+import { NOTE_TAGS } from '../../types/note';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useNoteDraftStore } from '@/lib/store/noteStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-// interface NoteFormProps {
-//   tags: NoteTag[];
-// }
-
-// export default function NoteForm({ tags }: NoteFormProps) {
-  export default function NoteForm() {
+export default function NoteForm() {
   const router = useRouter();
-
   const queryClient = useQueryClient();
-
   const { draft, setDraft, clearDraft } = useNoteDraftStore();
 
   const handleChange = (
@@ -50,16 +43,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
       toast.success('Note created');
       clearDraft();
       queryClient.invalidateQueries({ queryKey: ['notes'] });
-
       router.back();
-      router.refresh();
     },
     onError: () => {
       toast.error('Failed to create note');
     },
   });
 
-  const formAction = async () => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (!draft.title || draft.title.length < 3) {
       toast.error('Title must be at least 3 characters');
       return;
@@ -72,7 +65,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
   };
 
   return (
-    <form className={css.form} action={formAction}>
+    <form className={css.form} onSubmit={handleSubmit}>
       <div className={css.formGroup}>
         <label htmlFor="title">Title</label>
         <input
@@ -113,16 +106,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
               {tag}
             </option>
           ))}
-          {/* {tags.map((tag) => (
-            <option key={tag} value={tag}>
-              {tag}
-            </option>
-          ))}
-          <option value="Todo">Todo</option>
-          <option value="Work">Work</option>
-          <option value="Personal">Personal</option>
-          <option value="Meeting">Meeting</option>
-          <option value="Shopping">Shopping</option> */}
         </select>
       </div>
 
